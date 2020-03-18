@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import json
 from psycopg2.extras import execute_values
-
+import pandas as pd
 
 
 
@@ -27,7 +27,7 @@ print("CURSOR", cursor)
 query = '''
 CREATE TABLE IF NOT EXISTS passengers (
   id SERIAL PRIMARY KEY,
-  survived bool,
+  survived int,
   pclass int,
   name varchar,
   sex varchar,
@@ -47,20 +47,22 @@ result = cursor.fetchall()
 print("PASSENGERS:", len(result))
 
 if len(result)==0:
-    #insert
+    CSV_filepath = os.path.join(os.path.dirname(__file__), "..", "titanic.csv")
+    df = pd.read_csv(CSV_filepath)
 
-
-'''
-import pandas as pd
-
-df = pd.read_csv("titanic.csv")
-
-print(df.head(5))
-
+    print(df.head(5))
 ###Need to get all my data in a csv into a list of tuples
+    rows = list(df.itertuples(index=False, name=None))
 
-print(df.dtypes)
-'''
+
+    insertion_query = "INSERT INTO passengers (survived, pclass, name, sex, age, sib_spouse_count, parent_child_count, fare) VALUES %s"
+    execute_values(cursor, insertion_query, rows)
+
+#breakpoint()
+
+
+#print(df.dtypes)
+
 
 ##Save the transactions
 connection.commit()
