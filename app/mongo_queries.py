@@ -1,7 +1,8 @@
 # app/mongo_queries.py
 #"How was working with MongoDB different from working with PostgreSQL? What was easier, and what was harder?"
 ## MongoDB was very difficult to connect to! I had to downgrade the version of Python I was using to make the certificates work with Mongo.
-
+## Once I got the data in json format though, it's fairly easy to put into Mongo.
+## And I don't have to specify the data types 
 import pymongo
 import os
 from dotenv import load_dotenv
@@ -68,9 +69,9 @@ DB_FILEPATH = os.path.join(os.path.dirname(__file__), "..", "armory_item.json")
 with open(DB_FILEPATH) as armory:
     json_data = json.load(armory)
 
-print(json_data)
+print(json_data[0])
 
-collection.insert_all({json_data})
+collection.insert_many(json_data)
     ###LIst of dctionaries
     ## key is the row values
     ## INsert many
@@ -78,11 +79,3 @@ collection.insert_all({json_data})
 
 print("DOCS:", collection.count_documents({}))
 #print(collection.count_documents({"name": "Pikachu"}))
-
-
-'''
-insertion_query = "INSERT INTO passengers (survived, pclass, name, sex, age, sib_spouse_count, parent_child_count, fare) VALUES %s"
-execute_values(cursor, insertion_query, rows)
-# ACTUALLY SAVE THE TRANSACTIONS
-connection.commit()
-'''
