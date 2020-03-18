@@ -58,23 +58,27 @@ print("DOCS:", collection.count_documents({}))
 print(collection.count_documents({"name": "Pikachu"}))
 '''
 
+### This is one way to go about it.
+##pd.read_sql_query
 '''
 armory_json_string = json.dumps(armory_item.json)
 '''
 
+DB_FILEPATH = os.path.join(os.path.dirname(__file__), "..", "armory_item.json")
+with open(DB_FILEPATH) as armory:
+    json_data = json.load(armory)
 
-'''
-collection.insert_one({
-    connection
+print(json_data)
+
+collection.insert_all({json_data})
     ###LIst of dctionaries
     ## key is the row values
     ## INsert many
-    
 
-})
+
 print("DOCS:", collection.count_documents({}))
 #print(collection.count_documents({"name": "Pikachu"}))
-'''
+
 
 '''
 insertion_query = "INSERT INTO passengers (survived, pclass, name, sex, age, sib_spouse_count, parent_child_count, fare) VALUES %s"
