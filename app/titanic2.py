@@ -29,9 +29,173 @@ CREATE TABLE IF NOT EXISTS passengers (
 );
 """
 cursor.execute(query)
+
 cursor.execute("SELECT * from passengers;")
 result = cursor.fetchall()
 print("PASSENGERS:", len(result))
+
+#How many passengers survived?
+query2 = ('''
+SELECT *
+FROM passengers
+WHERE survived=1;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print("SURVIVORS:", len(result2))
+
+#How many passengers died?
+query2 = ('''
+SELECT *
+FROM passengers
+WHERE survived=0;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print("FATALITIES:", len(result2))
+
+#How many passengers were in each class?
+query2 = ('''
+SELECT COUNT(pclass)
+FROM passengers
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"PASSENGERS IN EACH CLASS: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+
+#How many passengers survived within each class?
+
+query2 = ('''
+SELECT COUNT(pclass)
+FROM passengers
+WHERE survived=1
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"PASSENGERS SURVIVED IN EACH CLASS: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+
+#How many passengers died within each class?
+
+query2 = ('''
+SELECT COUNT(pclass)
+FROM passengers
+WHERE survived=0
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"PASSENGERS DIED IN EACH CLASS: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+
+#What was the average age of survivors?
+
+query2 = ('''
+SELECT AVG(age)
+FROM passengers
+WHERE survived=1
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"AVERAGE AGE OF SURVIVORS {result2}")
+
+#What was the average age of nonsurvivors?
+
+query2 = ('''
+SELECT AVG(age)
+FROM passengers
+WHERE survived=0
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"AVERAGE AGE OF NON-SURVIVORS {result2}")
+
+#What was the average age of each passenger class?
+
+query2 = ('''
+SELECT AVG(age)
+FROM passengers
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"AVG AGE IN EACH CLASS: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+#What was the average fare by passenger class?
+query2 = ('''
+SELECT AVG(fare)
+FROM passengers
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"AVG FARE IN EACH CLASS: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+#What was the average fare by survival?
+query2 = ('''
+SELECT AVG(fare)
+FROM passengers
+GROUP BY survived
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"AVG FARE BY SURVIVAL: DIED: {result2[0][0]} SURVIVED: {result2[1][0]}")
+
+#How many siblings/spouses aboard on average, by passenger class?
+query2 = ('''
+SELECT AVG(sib_spouse_count)
+FROM passengers
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"HOW MANY SIBLINGS ABOARD, ON AVERAGE: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
+
+
+
+#How many siblings/spouses aboard on average, by survival?
+query2 = ('''
+SELECT AVG(sib_spouse_count)
+FROM passengers
+GROUP BY survived
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"HOW MANY SIBLINGS ABOARD, ON AVERAGE: DIED: {result2[0][0]} SURVIVED: {result2[1][0]}")
+
+
+
+#How many parents/children aboard on average, by passenger class? By survival?
+
+
+#Do any passengers have the same name?
+
+##This is to insert the Titanic .csv into the table. Only runs once.
 if len(result) == 0:
     # INSERT RECORDS
     #CSV_FILEPATH = "data/titanic.csv"
@@ -40,14 +204,11 @@ if len(result) == 0:
     df = pandas.read_csv(CSV_FILEPATH)
     print(df.head())
     # rows should be a list of tuples
-    # [
-    #   ('A rowwwww', 'null'),
-    #   ('Another row, with JSONNNNN', json.dumps(my_dict)),
-    #   ('Third row', "3")
-    # ]
-    # h/t Jesus and https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.itertuples.html
-    rows = list(df.itertuples(index=False, name=None))
     insertion_query = "INSERT INTO passengers (survived, pclass, name, sex, age, sib_spouse_count, parent_child_count, fare) VALUES %s"
     execute_values(cursor, insertion_query, rows)
 # ACTUALLY SAVE THE TRANSACTIONS
 connection.commit()
+
+'''
+(Bonus! Hard, may require pulling and processing with Python) How many married couples were aboard the Titanic? Assume that two people (one Mr. and one Mrs.) with the same last name and with at least 1 sibling/spouse aboard are a married couple.
+'''
