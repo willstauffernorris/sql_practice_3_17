@@ -183,17 +183,46 @@ FROM passengers
 GROUP BY survived
 ;
 ''')
-
 cursor.execute(query2)
 result2 = cursor.fetchall()
 print(f"HOW MANY SIBLINGS ABOARD, ON AVERAGE: DIED: {result2[0][0]} SURVIVED: {result2[1][0]}")
 
+#How many parents/children aboard on average, by passenger class?
+query2 = ('''
+SELECT AVG(parent_child_count)
+FROM passengers
+GROUP BY pclass
+;
+''')
+
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"HOW MANY PARENTS/CHILDREN ABOARD, ON AVERAGE: FIRST: {result2[0][0]} SECOND: {result2[1][0]} THIRD: {result2[2][0]}")
 
 
-#How many parents/children aboard on average, by passenger class? By survival?
 
+#How many parents/children aboard on average, by survival?
+query2 = ('''
+SELECT AVG(parent_child_count)
+FROM passengers
+GROUP BY survived
+;
+''')
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"HOW MANY PARENTS/CHILDREN ABOARD, ON AVERAGE: DIED: {result2[0][0]} SURVIVED: {result2[1][0]}")
 
 #Do any passengers have the same name?
+query2 = ('''
+SELECT COUNT(DISTINCT name)
+FROM passengers
+;
+''')
+cursor.execute(query2)
+result2 = cursor.fetchall()
+print(f"NUMBER OF DISTINCT NAMES: {result2} (THIS IS THE SAME AS THE TOTAL PASSENGERS, NO SAME NAMES)")
+
+
 
 ##This is to insert the Titanic .csv into the table. Only runs once.
 if len(result) == 0:
@@ -208,7 +237,3 @@ if len(result) == 0:
     execute_values(cursor, insertion_query, rows)
 # ACTUALLY SAVE THE TRANSACTIONS
 connection.commit()
-
-'''
-(Bonus! Hard, may require pulling and processing with Python) How many married couples were aboard the Titanic? Assume that two people (one Mr. and one Mrs.) with the same last name and with at least 1 sibling/spouse aboard are a married couple.
-'''
